@@ -1,4 +1,7 @@
 streamlit>=1.37.0
+streamlit-autorefresh
 yfinance>=0.2.50
 pandas>=2.0.0
 plotly>=5.18.0
+Flask
+psutil

@@ -8,15 +8,21 @@ from datetime import datetime, timedelta
 from streamlit_autorefresh import st_autorefresh
 
 # =========================
-# 기본 설정
+# 헤더
 # =========================
-st.set_page_config(
-    page_title="PC Monitor",
-    page_icon="🖥️",
-    layout="wide"
+st.title("🖥️ PC Monitor Dashboard")
+
+st.caption(
+    "실시간 컴퓨터 상태 모니터링 및 이력 관리 시스템"
 )
 
-DB_FILE = "monitor_history.db"
+# =========================
+# 기본 설정
+# =========================
+DB_FILE = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    "monitor_history.db"
+) 
 REFRESH_INTERVAL = 10000
 
 # 자동 새로고침: 10초
@@ -260,12 +266,6 @@ def draw_chart(df, column, title, color):
 init_db()
 
 cleanup_old_data()
-
-st.title("🖥️ PC Monitor Dashboard")
-
-st.caption(
-    "실시간 컴퓨터 상태 모니터링 및 이력 관리 시스템"
-)
 
 # PC 상태 측정
 data = get_pc_status()

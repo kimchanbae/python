@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Python Monitoring{% endblock %}</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="sidebar">
+    <h2>PYTHON MONITOR</h2>
+
+    <a href="/">🏠 메인 대시보드</a>
+    <a href="/pcmonitor">🖥 PC 모니터</a>
+</div>
+
+<div class="main-content">
+
+    <header>
+        <h2>{% block heading %}Dashboard{% endblock %}</h2>
+        <span>System Monitoring</span>
+    </header>
+
+    <section class="content">
+        {% block content %}{% endblock %}
+    </section>
+
+</div>
+
+{% block scripts %}{% endblock %}
+
+</body>
+</html>

@@ -11,13 +11,10 @@ import yfinance as yf
 # ==========================================
 # 1. 기본 설정
 # ==========================================
-st.set_page_config(
-    page_title="주식 관심종목 대시보드",
-    page_icon="📈",
-    layout="wide"
+FILE_NAME = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    "watchlist.json"
 )
-
-FILE_NAME="watchlist.json"
 
 DEFAULT_STOCKS={}
 
