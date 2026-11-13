@@ -20,21 +20,21 @@ dashboard_page = st.Page(
 )
 
 pcmonitor_page = st.Page(
-    BASE_DIR / "pcmonitor" / "pcmonitor.py",
+    BASE_DIR / "app" / "pcmonitor" / "pcmonitor.py",
     title="PC 모니터",
     icon="🖥️"
 )
 
 stock_page = st.Page(
-    BASE_DIR / "stock" / "stock.py",
+    BASE_DIR / "app" / "stock" / "stock.py",
     title="주식 관심종목 대시보드",
     icon="📈"
 )
 
-auto_page = st.Page(
-    BASE_DIR / "auto" / "auto.py",
-    title="자동화 대시보드"
-)
+# auto_page = st.Page(
+#     BASE_DIR / "auto" / "auto.py",
+#     title="자동화 대시보드"
+# )
 
 # 페이지 네비게이션
 pg = st.navigation(
