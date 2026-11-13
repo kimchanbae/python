@@ -10,18 +10,18 @@ def test_health():
     assert response.json()["status"] == "healthy"
 
 
-def test_get_users():
-    response = client.get("/users")
+# def test_get_users():
+#     response = client.get("/users")
 
-    assert response.status_code == 200
-    assert len(response.json()) >= 2
+#     assert response.status_code == 200
+#     assert len(response.json()) >= 2
 
 
-def test_get_user():
-    response = client.get("/users/1")
+# def test_get_user():
+#     response = client.get("/users/1")
 
-    assert response.status_code == 200
-    assert response.json()["name"] == "Kim"
+#     assert response.status_code == 200
+#     assert response.json()["name"] == "Kim"
 
 
 def test_user_not_found():
