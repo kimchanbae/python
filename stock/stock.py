@@ -6,6 +6,7 @@ from datetime import datetime
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
+from st_aggrid import AgGrid, GridOptionsBuilder
 import yfinance as yf
 
 # ==========================================
@@ -201,6 +202,10 @@ st.markdown("""
     border: 1px solid #e5e9f0;
 }
 
+.tr {
+    text-align: right;
+}
+
 div[data-testid="stMetricValue"] {
     font-size: 24px;
     font-weight: bold;
@@ -213,107 +218,137 @@ div[data-testid="stMetricValue"] {
 # ==========================================
 # 7. 헤더
 # ==========================================
-st.markdown(
-    '<div class="stock-title">📈 MY STOCK WATCH</div>',
-    unsafe_allow_html=True
-)
+head_col1, head_col2 = st.columns([9,1])
+
+with head_col1:
+    st.markdown(
+        '<div class="stock-title">📈 MY STOCK WATCH</div>',
+        unsafe_allow_html=True
+    )
+
+with head_col2:
+    if st.button(
+        "🔄 새로고침",
+        use_container_width=True
+    ):
+        get_stock_data.clear()
+        st.rerun()
 
 st.caption("나만의 관심종목 주식 조회 시스템")
 
 st.divider()
 
 # ==========================================
-# 8. 사이드바 설정
+# 설정
 # ==========================================
-st.sidebar.title("⚙️ 설정")
+if "show_settings" not in st.session_state:
+    st.session_state.show_settings = False
 
-auto_refresh = st.sidebar.toggle(
-    "자동새로고침",
-    value=True
-)
+setting_col1, setting_col2 = st.columns([9.5, 0.5])
 
-refresh_interval = st.sidebar.selectbox(
-    "새로고침간격",
-    [10, 30, 60, 120, 300],
-    index=1,
-    format_func=lambda x: f"{x}초"
-)
+with setting_col1:
+    st.subheader("⚙️ 설정")
 
-st.sidebar.divider()
+with setting_col2:
+    arriow_icon = "🔼" if st.session_state.show_settings else "🔽"
 
-st.sidebar.subheader("➕ 관심종목 추가")
+    if st.button(arriow_icon, key="setting_toggle"):
+        st.session_state.show_settings = not st.session_state.show_settings
 
-# 한국 주요 종목 빠른 선택
-stock_names = ["직접 입력"] + list(DEFAULT_STOCKS.keys())
+st.markdown("🔄 새로고침")
 
-selected_name = st.sidebar.selectbox(
-    "종목 선택",
-    stock_names
-)
+refresh_col1, refresh_col2 = st.columns([1,1])
 
-with st.sidebar.form("add_stock_form"):
+with refresh_col1:
+    auto_refresh = st.toggle(
+        "자동새로고침",
+        value=True
+    )
 
-    if selected_name == "직접 입력":
-        new_name = st.text_input("종목명")
-        new_symbol = st.text_input(
-            "종목코드",
-            placeholder="예: 005930.KS"
+with refresh_col2:
+    rf_col1, rf_col2 = st.columns([1.1, 8.9])
+
+    with rf_col1:
+        st.write("새로고침간격")
+
+    with rf_col2:
+        refresh_interval = st.selectbox(
+            "새로고침간격",
+            [10, 30, 60, 120, 300],
+            index=1,
+            format_func=lambda x: f"{x}초",
+            label_visibility="collapsed"
         )
-    else:
-        new_name = selected_name
-        new_symbol = DEFAULT_STOCKS[selected_name]
 
-    submitted = st.form_submit_button(
-        "관심종목 추가",
-        use_container_width=True
-    )
+# ==========================================
+# 관심종목
+# ==========================================
+if st.session_state.show_settings:
+    stock_col1, stock_col2 = st.columns(2)
 
-    if submitted:
-        success, message = add_stock(new_name, new_symbol)
+    with stock_col1:
+        st.markdown("➕ 관심종목 추가")
 
-        if success:
-            st.sidebar.success(message)
+        # 한국 주요 종목 빠른 선택
+        stock_names = ["직접 입력"] + list(DEFAULT_STOCKS.keys())
 
-            # 대시보드 전체 갱신
-            st.rerun()
+        selected_name = st.selectbox(
+            "종목 선택",
+            stock_names
+        )
+
+        with st.form("add_stock_form"):
+
+            if selected_name == "직접 입력":
+                new_name = st.text_input("종목명")
+                new_symbol = st.text_input(
+                    "종목코드",
+                    placeholder="예: 005930.KS"
+                )
+            else:
+                new_name = selected_name
+                new_symbol = DEFAULT_STOCKS[selected_name]
+
+            submitted = st.form_submit_button(
+                "관심종목 추가",
+                use_container_width=True
+            )
+
+            if submitted:
+                success, message = add_stock(new_name, new_symbol)
+
+                if success:
+                    st.success(message)
+
+                    # 대시보드 전체 갱신
+                    st.rerun()
+                else:
+                    st.error(message)
+
+    with stock_col2:
+        st.markdown("🗑️ 관심종목 삭제")
+
+        watchlist = st.session_state.watchlist
+
+        if watchlist:
+
+            delete_name = st.selectbox(
+                "삭제할 종목",
+                list(watchlist.keys()),
+                key="delete_stock"
+            )
+
+            if st.button(
+                "종목 삭제",
+                use_container_width=True
+            ):
+                delete_stock(delete_name)
+                st.rerun()
+
         else:
-            st.sidebar.error(message)
+            st.info("등록된 관심종목이 없습니다.")
 
-
-st.sidebar.divider()
-
-st.sidebar.subheader("🗑️ 관심종목 삭제")
-
-watchlist = st.session_state.watchlist
-
-if watchlist:
-
-    delete_name = st.sidebar.selectbox(
-        "삭제할 종목",
-        list(watchlist.keys()),
-        key="delete_stock"
-    )
-
-    if st.sidebar.button(
-        "종목 삭제",
-        use_container_width=True
-    ):
-        delete_stock(delete_name)
-        st.rerun()
-
-else:
-    st.sidebar.info("등록된 관심종목이 없습니다.")
-
-
-st.sidebar.divider()
-
-if st.sidebar.button(
-    "🔄 지금 새로고침",
-    use_container_width=True
-):
-    
-    get_stock_data.clear()
-    st.rerun()
+st.divider()
 
 # ==========================================
 # 9. 주가 대시보드
@@ -385,11 +420,11 @@ def stock_dashboard():
 
     items = list(results.items())
 
-    for i in range(0, len(items), 3):
+    for i in range(0, len(items), 5):
 
-        cols = st.columns(3)
+        cols = st.columns(5)
 
-        for j, (name, data) in enumerate(items[i:i+3]):
+        for j, (name, data) in enumerate(items[i:i+5]):
 
             with cols[j]:
 
@@ -420,19 +455,54 @@ def stock_dashboard():
 
         table_data.append({
             "종목명": name,
-            "현재가": f"{data['price']:,.0f}원",
-            "전일 종가": f"{data['previous']:,.0f}원",
-            "전일 대비": f"{data['change']:+,.0f}원",
-            "등락률(%)": round(data["rate"], 2),
-            "거래량(주)": data["volume"]
+            "현재가(원)": f"{data['price']:,.0f}",
+            "전일 종가(원)": f"{data['previous']:,.0f}",
+            "전일 대비(원)": f"{data['change']:+,.0f}",
+            "등락률(%)": round(data['rate'], 2),
+            "거래량(주)": f"{data['volume']:,.0f}"
         })
 
     df = pd.DataFrame(table_data)
 
-    st.dataframe(
+    gb = GridOptionsBuilder.from_dataframe(df)
+
+    # 헤더 가운데 정렬
+    gb.configure_default_column(
+        headerClass="ag-center-header",
+        sortable=True,
+        resizable=True
+    )
+
+    # 종목명 왼쪽 정렬
+    gb.configure_column(
+        "종목명",
+        cellStyle={"textAlign": "left"}
+    )
+
+    # 숫자 컬럼 오른쪽 정렬    
+    for col in [
+        "현재가(원)", "전일 종가(원)", "전일 대비(원)", "등락률(%)", "거래량(주)"
+    ]:
+        gb.configure_column(
+            col,
+            cellStyle={"textAlign": "right"}
+        )
+
+    grid_options = gb.build()
+
+    # 헤더 가운데 정렬 CSS
+    custom_css={
+        ".ag-center-header, .ag-header-cell-label": {
+            "justify-content": "center"
+        }
+    }
+    
+    AgGrid(
         df,
-        use_container_width=True,
-        hide_index=True
+        gridOptions=grid_options,
+        fit_columns_on_grid_load=True,
+        allow_unsafe_jscode=False,
+        custom_css=custom_css
     )
 
     st.divider()

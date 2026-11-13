@@ -31,11 +31,17 @@ stock_page = st.Page(
     icon="📈"
 )
 
+auto_page = st.Page(
+    BASE_DIR / "auto" / "auto.py",
+    title="자동화 대시보드"
+)
+
 # 페이지 네비게이션
 pg = st.navigation(
     {
         "메인": [dashboard_page], 
-        "모니터링": [pcmonitor_page, stock_page]
+        "모니터링": [pcmonitor_page, stock_page],
+        "자동화": [auto_page]
     },
     position="sidebar"
 )
