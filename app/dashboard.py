@@ -19,7 +19,7 @@ with col1:
         "실시간으로 모니터링합니다."
     )
     st.page_link(
-        "pcmonitor/pcmonitor.py",
+        "app/pcmonitor/pcmonitor.py",
         label="PC 모니터 실행",
         icon="🖥️",
         use_container_width=True
@@ -29,7 +29,7 @@ with col2:
     st.markdown("### 📈 Stock Monitor")
     st.write("주식 관심종목 및 시세 모니터링")
     st.page_link(
-        "stock/stock.py",
+        "app/stock/stock.py",
         label="주식 관심종목 대시보드",
         icon="📈",
         use_container_width=True
@@ -39,7 +39,7 @@ with col3:
     st.markdown("### 자동화 monitor")
     st.write("자동화 모니터링")
     st.page_link(
-        "auto/auto.py",
+        "app/auto/auto.py",
         label="준비중",
         use_container_width=True
     )
