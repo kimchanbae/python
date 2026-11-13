@@ -40,8 +40,8 @@ stock_page = st.Page(
 pg = st.navigation(
     {
         "메인": [dashboard_page], 
-        "모니터링": [pcmonitor_page, stock_page],
-        "자동화": [auto_page]
+        "모니터링": [pcmonitor_page, stock_page] 
+        # "자동화": [auto_page]
     },
     position="sidebar"
 )
