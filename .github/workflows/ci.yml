@@ -34,7 +34,7 @@ jobs:
       - name: Set lowercase image name
         if: github.event_name == 'push'
         run: |
-          echo "IMAGE_NAME=ghcr.io/${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+          echo "IMAGE_NAME=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/python-api" >> $GITHUB_ENV
 
       - name: Login to GHCR
         if: github.event_name == 'push'
