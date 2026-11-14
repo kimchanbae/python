@@ -58,8 +58,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ env.IMAGE_NAME }}:latest
-            ${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ghcr.io/kimchanbae/python-api:latest
+            ghcr.io/kimchanbae/python-api:${{ github.sha }}
           provenance: true
           sbom: true
 
