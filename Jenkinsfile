@@ -42,6 +42,14 @@ pipeline {
             }
         }
 
+        stage('Tag Local Image') {
+            steps {
+                sh '''
+                    docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${LOCAL_IMAGE}:${IMAGE_TAG}
+                '''
+            }
+        }
+
         stage('Deploy Application') {
             steps {
                 sh '''
@@ -61,6 +69,7 @@ pipeline {
                 sh '''
                     docker ps --filter name=${CONTAINER_NAME}
                     docker logs --tail 30 ${CONTAINER_NAME}
+                    docker images ${LOCAL_IMAGE}
                 '''
             }
         }
