@@ -14,7 +14,7 @@ st.set_page_config(
 # 페이지 등록
 dashboard_page = st.Page(
     BASE_DIR / "dashboard.py",
-    title="메인 대시보드",
+    title="메인 대시보드 수정 ",
     icon="🏠",
     default=True
 )
