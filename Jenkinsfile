@@ -10,7 +10,7 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = 'ghcr.io/kimchanbae/python-app'
+        IMAGE_NAME = 'ghcr.io/kimchanbae/python-api'
         CONTAINER_NAME = 'python-app'
     }
 
