@@ -86,10 +86,7 @@ pipeline {
             }
             steps {
                 sh '''
-                    docker pull ${IMAGE_NAME}:${IMAGE_TAG}
-                    docker tag \
-                      ${IMAGE_NAME}:latest \
-                      ${LOCAL_IMAGE}:latest
+                    docker pull ${IMAGE_NAME}:latest
                 '''
             }
         }
@@ -97,7 +94,9 @@ pipeline {
         stage('Tag Local Image') {
             steps {
                 sh '''
-                    docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${LOCAL_IMAGE}:${IMAGE_TAG}
+                    docker tag \
+                        ${IMAGE_NAME}:latest \
+                        ${LOCAL_IMAGE}:latest
                 '''
             }
         }
@@ -115,7 +114,7 @@ pipeline {
                       --name ${CONTAINER_NAME} \
                       --restart unless-stopped \
                       -p 8501:8501 \
-                      ${IMAGE_NAME}:${IMAGE_TAG}
+                      ${LOCAL_IMAGE}:latest
                 '''
             }
         }
@@ -133,7 +132,7 @@ pipeline {
                       ${CONTAINER_NAME} | grep -q true
                     docker ps --filter name=${CONTAINER_NAME}
                     docker logs --tail 30 ${CONTAINER_NAME}
-                    docker images ${LOCAL_IMAGE}
+                    docker images
                 '''
             }
         }
