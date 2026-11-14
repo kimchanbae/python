@@ -1,8 +1,4 @@
 import streamlit as st
-from pathlib import Path
-
-# 프로젝트 기본 경로
-BASE_DIR = Path(__file__).resolve().parent
 
 st.title("🏠 Python 통합 대시보드")
 
@@ -23,7 +19,7 @@ with col1:
         "실시간으로 모니터링합니다."
     )
     st.page_link(
-        BASE_DIR / "pcmonitor" / "pcmonitor.py",
+        "pcmonitor/pcmonitor.py",
         label="PC 모니터 실행",
         icon="🖥️",
         use_container_width=True
@@ -33,7 +29,7 @@ with col2:
     st.markdown("### 📈 Stock Monitor")
     st.write("주식 관심종목 및 시세 모니터링")
     st.page_link(
-        BASE_DIR / "stock" / "stock.py",
+        "stock/stock.py",
         label="주식 관심종목 대시보드",
         icon="📈",
         use_container_width=True
@@ -43,7 +39,7 @@ with col3:
     st.markdown("### 자동화 monitor")
     st.write("자동화 모니터링")
     st.page_link(
-        BASE_DIR / "auto" / "auto.py",
+        "auto/auto.py",
         label="준비중",
         use_container_width=True
     )

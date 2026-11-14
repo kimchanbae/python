@@ -21,8 +21,8 @@ pipeline {
             steps {
                 sh '''
                     docker run --rm \
-                      -v "$WORKSPACE:/app" \
-                      -w /app \
+                      --volumes-from jenkins \
+                      -w /var/jenkins_home/workspace/python-app-deploy \
                       python:3.14 \
                       sh -c "pip install -q -r requirements.txt && python -m pytest -v"
                 '''
