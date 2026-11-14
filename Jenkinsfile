@@ -11,14 +11,6 @@ pipeline {
         timestamps()
     }
 
-    parameters {
-        string(
-            name: 'IMAGE_TAG',
-            defaultValue: 'latest',
-            description: 'GitHub Actions에서 생성한 Commit SHA'
-        )
-    }
-
     environment {
         IMAGE_NAME = 'ghcr.io/kimchanbae/python-api' 
         LOCAL_IMAGE = 'python-api'
@@ -50,30 +42,33 @@ pipeline {
         stage('Check Image Update') {
             steps {
                 script {
+                    env.DIGEST_FILE = '/var/jenkins_home/deployed-python-api-digest'
+                    
                     env.REMOTE_DIGEST = sh(
                         script: '''
+                            set -e
                             docker buildx imagetools inspect \
-                              ${IMAGE_NAME}:latest \
-                              --format '{{json .Manifest}}' | sha256sum | awk '{print $1}'
+                              "${IMAGE_NAME}:${IMAGE_TAG}" \
+                              --format '{{json .Manifest}}' \
+                              | sha256sum | awk '{print $1}'
                         ''',
                         returnStdout: true
                     ).trim()
 
-                    if (fileExists('.deployed-digest')) {
+                    if (fileExists(env.DIGEST_FILE)) {
                         env.LOCAL_DIGEST = readFile(
-                            '.deployed-digest'
+                            env.DIGEST_FILE
                         ).trim()
                     } else {
                         env.LOCAL_DIGEST = ''
                     }
 
                     if (env.REMOTE_DIGEST == env.LOCAL_DIGEST) {
-                        echo 'No new image. Deployment skipped.'
                         env.SHOULD_DEPLOY = 'false'
+                        echo 'No new image. Deployment skipped.'
                     } else {
-                        echo 'New image detected!'
-                        echo "Remote Digest: ${env.REMOTE_DIGEST}"
                         env.SHOULD_DEPLOY = 'true'
+                        echo 'New image detected!'
                     }
                 }
             }
@@ -86,17 +81,22 @@ pipeline {
             }
             steps {
                 sh '''
-                    docker pull ${IMAGE_NAME}:latest
+                    docker pull "${IMAGE_NAME}:${IMAGE_TAG}"
                 '''
             }
         }
 
+        // 4. 로컬 이미지 이름 변경
         stage('Tag Local Image') {
+            when {
+                expression { env.SHOULD_DEPLOY == 'true' }
+            }
             steps {
                 sh '''
                     docker tag \
-                        ${IMAGE_NAME}:latest \
-                        ${LOCAL_IMAGE}:latest
+                        "${IMAGE_NAME}:${IMAGE_TAG}" \
+                        "${LOCAL_IMAGE}:${IMAGE_TAG}"
+                    docker images "${LOCAL_IMAGE}"
                 '''
             }
         }
@@ -108,13 +108,13 @@ pipeline {
             }
             steps {
                 sh '''
-                    docker rm -f ${CONTAINER_NAME} || true
+                    docker rm -f "${CONTAINER_NAME}" || true
 
                     docker run -d \
-                      --name ${CONTAINER_NAME} \
+                      --name "${CONTAINER_NAME}" \
                       --restart unless-stopped \
                       -p 8501:8501 \
-                      ${LOCAL_IMAGE}:latest
+                      "${LOCAL_IMAGE}:${IMAGE_TAG}"
                 '''
             }
         }
@@ -130,9 +130,8 @@ pipeline {
                     docker inspect \
                       --format='{{.State.Running}}' \
                       ${CONTAINER_NAME} | grep -q true
-                    docker ps --filter name=${CONTAINER_NAME}
-                    docker logs --tail 30 ${CONTAINER_NAME}
-                    docker images
+                    docker ps --filter name="${CONTAINER_NAME}"
+                    docker logs --tail 30 "${CONTAINER_NAME}"
                 '''
             }
         }
@@ -145,10 +144,9 @@ pipeline {
             steps {
                 script {
                     writeFile(
-                        file: '.deployed-digest',
+                        file: env.DIGEST_FILE,
                         text: env.REMOTE_DIGEST
                     )
-                    echo 'Deployed image digest saved.'
                 }
             }
         }
