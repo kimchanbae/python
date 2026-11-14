@@ -88,8 +88,8 @@ pipeline {
                 sh '''
                     docker pull ${IMAGE_NAME}:${IMAGE_TAG}
                     docker tag \
-                      ${IMAGE_NAME}:${IMAGE_TAG} \
-                      ${LOCAL_IMAGE}:${IMAGE_TAG}
+                      ${IMAGE_NAME}:latest \
+                      ${LOCAL_IMAGE}:latest
                 '''
             }
         }
