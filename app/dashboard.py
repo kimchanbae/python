@@ -20,10 +20,11 @@ with col1:
     )
     st.page_link(
         "pcmonitor/pcmonitor.py",
-        label="PC 모니터 실행",
+        label="PC 모니터 실행",  
         icon="🖥️",
         use_container_width=True
     )
+    
 
 with col2:
     st.markdown("### 📈 Stock Monitor")
