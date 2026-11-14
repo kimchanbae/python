@@ -3,7 +3,7 @@ pipeline {
 
     // 매분마다 GHCR 이미지 확인
     triggers {
-        cron('* * * * *')
+        cron('H/10 * * * *')
     }
 
     options {

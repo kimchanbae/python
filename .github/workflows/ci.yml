@@ -58,8 +58,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/kimchanbae/python-api:latest
-            ghcr.io/kimchanbae/python-api:${{ github.sha }}
+            ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/python-api:latest
+            ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/python-api:${{ github.sha }}
           provenance: true
           sbom: true
 
