@@ -2,7 +2,7 @@ import streamlit as st
 from pathlib import Path
 
 # 프로젝트 기본 경로
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent
 
 # 전체 페이지 공통 설정
 st.set_page_config(
@@ -13,26 +13,26 @@ st.set_page_config(
 
 # 페이지 등록
 dashboard_page = st.Page(
-    BASE_DIR / "app" / "dashboard.py",
+    BASE_DIR / "dashboard.py",
     title="메인 대시보드",
     icon="🏠",
     default=True
 )
 
 pcmonitor_page = st.Page(
-    BASE_DIR / "app" / "pcmonitor" / "pcmonitor.py",
+    BASE_DIR / "pcmonitor" / "pcmonitor.py",
     title="PC 모니터",
     icon="🖥️"
 )
 
 stock_page = st.Page(
-    BASE_DIR / "app" / "stock" / "stock.py",
+    BASE_DIR / "stock" / "stock.py",
     title="주식 관심종목 대시보드",
     icon="📈"
 )
 
 auto_page = st.Page(
-    BASE_DIR / "app" / "auto" / "auto.py",
+    BASE_DIR / "auto" / "auto.py",
     title="자동화 대시보드"
 )
 
