@@ -1,4 +1,4 @@
-name: Python API CI and Docker Publish
+name: Python CI - Docker Build
 
 on:
   push:

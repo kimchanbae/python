@@ -1,85 +1,68 @@
 pipeline {
     agent any
 
-    triggers {
-        pollSCM('H/2 * * * *')
+    parameters {
+        string(
+            name: 'IMAGE_TAG',
+            defaultValue: 'latest',
+            description: 'GitHub Actions에서 생성한 Commit SHA'
+        )
     }
 
     environment {
-        IMAGE_NAME = 'python-app'
+        IMAGE_NAME = 'ghcr.io/kimchanbae/python'
         CONTAINER_NAME = 'python-app'
     }
 
     stages {
-        stage('Checkout') {
+
+        stage('GHCR Login') {
             steps {
-                checkout scm
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'ghcr-readonly',
+                        usernameVariable: 'GHCR_USER',
+                        passwordVariable: 'GHCR_TOKEN'
+                    )
+                ]) {
+                    sh '''
+                        set +x
+                        echo "$GHCR_TOKEN" | docker login ghcr.io \
+                          -u "$GHCR_USER" --password-stdin
+                    '''
+                }
             }
         }
 
-        stage('Python Test') {
+        stage('Pull Docker Image') {
             steps {
                 sh '''
-                    docker run --rm \
-                      --volumes-from jenkins \
-                      -w /var/jenkins_home/workspace/python-app-deploy \
-                      python:3.14 \
-                      sh -c "pip install -q -r requirements.txt && python -m pytest -v"
+                    docker pull ${IMAGE_NAME}:${IMAGE_TAG}
                 '''
             }
         }
 
-        stage('Docker Build') {
+        stage('Deploy Application') {
             steps {
                 sh '''
-                    docker build -t python-app:latest .
-                '''
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                sh '''
-                    docker rm -f python-app || true
+                    docker rm -f ${CONTAINER_NAME} || true
 
                     docker run -d \
-                      --name python-app \
+                      --name ${CONTAINER_NAME} \
                       --restart unless-stopped \
-                      --memory=512m \
-                      -p 8000:8000 \
-                      python-app:latest
+                      -p 8501:8501 \
+                      ${IMAGE_NAME}:${IMAGE_TAG}
                 '''
             }
         }
 
-        stage('Health Check') {
+        stage('Verify Deployment') {
             steps {
                 sh '''
-                    for i in $(seq 1 20); do
-                      if docker exec python-app \
-                        python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8501/')"
-                      then
-                        echo "API HEALTH CHECK SUCCESS"
-                        exit 0
-                      fi
-                      sleep 3
-                    done
-
-                    echo "API HEALTH CHECK FAILED"
-                    docker logs python-app
-                    exit 1
+                    docker ps --filter name=${CONTAINER_NAME}
+                    docker logs --tail 30 ${CONTAINER_NAME}
                 '''
             }
-        }
-    }
-
-    post {
-        success {
-            echo 'Docker API deployment completed!'
-        }
-
-        failure {
-            echo 'Pipeline failed. Check stage logs.'
         }
     }
 }
