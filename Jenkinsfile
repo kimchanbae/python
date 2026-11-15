@@ -1,7 +1,7 @@
 pipeline {
     agent any
 
-    // 매분마다 GHCR 이미지 확인
+    // 10분마다 GHCR 이미지 확인
     triggers {
         cron('H/10 * * * *') 
     }
