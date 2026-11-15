@@ -12,7 +12,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
     group_add:
-      - "${DOCKER_GID}"
+      - "0"
 
     restart: unless-stopped
     mem_limit: 1536m
