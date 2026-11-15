@@ -12,10 +12,17 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
     group_add:
-      - "1001"
+      - "${DOCKER_GID}"
 
     restart: unless-stopped
     mem_limit: 1536m
+
+    networks:
+      - jenkins_network
+
+networks:
+  jenkins_network:
+    driver: bridge
 
 volumes:
   jenkins_data:
