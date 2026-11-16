@@ -6,7 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent
 
 # 전체 페이지 공통 설정
 st.set_page_config(
-    page_title="Python 통합 대시보드",
+    page_title="통합 대시보드",
     page_icon="🖥️",
     layout="wide"
 )
@@ -14,7 +14,7 @@ st.set_page_config(
 # 페이지 등록
 dashboard_page = st.Page(
     BASE_DIR / "dashboard.py",
-    title="메인 대시보드 수정 ",
+    title="메인 대시보드",
     icon="🏠",
     default=True
 )

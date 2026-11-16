@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.title("🏠 Python 통합 대시보드")
+st.title("🏠 통합 대시보드")
 
 st.caption(
     "통합 시스템 모니터링 및 관리"
