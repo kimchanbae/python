@@ -60,7 +60,7 @@ ai_pages = [
         "description": "AI 문서검색 서비스입니다.",
         "path": "rag/rag.py",
         "label": "문서검색 서비스 실행",
-        "icon": "search"
+        "icon": ":material/search:"
     }
 ]
 
