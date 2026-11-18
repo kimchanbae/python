@@ -151,29 +151,35 @@ pipeline {
             }
         }
 
+        // 이전 컨테이너 이미지 버전 정리
         stage('Cleanup Old Images') {
             steps {
                 sh '''
+                    set -e
+
+                    # 현재 실행 컨테이너의 실제 이미지 ID
                     CURRENT_IMAGE=$(docker inspect \
-                      --format='{{.Image}}' "${LOCAL_IMAGE}")
+                    --format='{{.Image}}' "${CONTAINER_NAME}")
 
                     echo "Current image: $CURRENT_IMAGE"
 
-                    docker image ls "${IMAGE_NAME}" \
-                      --format '{{.Repository}}:{{.Tag}} {{.ID}}' |
+                    # python-api 이미지 목록 확인
+                    docker image ls "${LOCAL_IMAGE}" \
+                    --format '{{.Repository}}:{{.Tag}} {{.ID}}' |
                     while read IMAGE_TAG IMAGE_ID; do
 
-                        # 현재 배포 이미지 보호
+                        # 현재 실행 이미지 보호
                         if [ "$IMAGE_ID" = "$CURRENT_IMAGE" ]; then
+                            echo "KEEP CURRENT: $IMAGE_TAG"
                             continue
                         fi
 
-                        # 다른 컨테이너가 사용하는 이미지 보호
+                        # 다른 컨테이너가 사용 중인지 확인
                         USED=false
 
                         for CID in $(docker ps -aq); do
                             USED_IMAGE=$(docker inspect \
-                              --format='{{.Image}}' "$CID")
+                            --format='{{.Image}}' "$CID")
 
                             if [ "$USED_IMAGE" = "$IMAGE_ID" ]; then
                                 USED=true
@@ -182,14 +188,18 @@ pipeline {
                         done
 
                         if [ "$USED" = "true" ]; then
-                            echo "KEEP: $IMAGE_TAG"
+                            echo "KEEP IN USE: $IMAGE_TAG"
                             continue
                         fi
 
-                        echo "DELETE: $IMAGE_TAG"
+                        echo "DELETE OLD IMAGE: $IMAGE_TAG"
+
                         docker rmi "$IMAGE_TAG" || true
 
                     done
+
+                    echo "Old image cleanup completed."
+                    docker images "${LOCAL_IMAGE}"
                 '''
             }
         }
