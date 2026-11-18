@@ -153,6 +153,9 @@ pipeline {
 
         // 이전 컨테이너 이미지 버전 정리
         stage('Cleanup Old Images') {
+            when {
+                expression { env.SHOULD_DEPLOY == 'true' }
+            }
             steps {
                 sh '''
                     set -e
@@ -205,6 +208,9 @@ pipeline {
         }
 
         stage('Docker Disk Cleanup') {
+            when {
+                expression { env.SHOULD_DEPLOY == 'true' }
+            }
             steps {
                 sh '''
                     echo "Docker disk usage before cleanup"
