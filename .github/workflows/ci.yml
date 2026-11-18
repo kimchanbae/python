@@ -68,7 +68,7 @@ jobs:
       - name: Delete old packages version
         uses: actions/delete-package-versions@v5
         with:
-          package-name: python-api
+          package-name: python-api 
           package-type: container
           min-version-to-skip: 3
           delete-only-untagged-versions: false
