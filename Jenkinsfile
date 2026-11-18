@@ -12,7 +12,7 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = 'ghcr.io/kimchanbae/python-api' 
+        IMAGE_NAME = 'ghcr.io/OWNER/python-api' 
         LOCAL_IMAGE = 'python-api'
         CONTAINER_NAME = 'python-app'
         IMAGE_TAG = 'latest'
@@ -115,8 +115,6 @@ pipeline {
                       --restart unless-stopped \
                       -p 8501:8501 \
                       "${LOCAL_IMAGE}:${IMAGE_TAG}"
-
-                    docker image prune -af
                 '''
             }
         }
@@ -150,6 +148,67 @@ pipeline {
                         text: env.REMOTE_DIGEST
                     )
                 }
+            }
+        }
+
+        stage('Cleanup Old Images') {
+            steps {
+                sh '''
+                    CURRENT_IMAGE=$(docker inspect \
+                      --format='{{.Image}}' "${LOCAL_IMAGE}")
+
+                    echo "Current image: $CURRENT_IMAGE"
+
+                    docker image ls "${IMAGE_NAME}" \
+                      --format '{{.Repository}}:{{.Tag}} {{.ID}}' |
+                    while read IMAGE_TAG IMAGE_ID; do
+
+                        # 현재 배포 이미지 보호
+                        if [ "$IMAGE_ID" = "$CURRENT_IMAGE" ]; then
+                            continue
+                        fi
+
+                        # 다른 컨테이너가 사용하는 이미지 보호
+                        USED=false
+
+                        for CID in $(docker ps -aq); do
+                            USED_IMAGE=$(docker inspect \
+                              --format='{{.Image}}' "$CID")
+
+                            if [ "$USED_IMAGE" = "$IMAGE_ID" ]; then
+                                USED=true
+                                break
+                            fi
+                        done
+
+                        if [ "$USED" = "true" ]; then
+                            echo "KEEP: $IMAGE_TAG"
+                            continue
+                        fi
+
+                        echo "DELETE: $IMAGE_TAG"
+                        docker rmi "$IMAGE_TAG" || true
+
+                    done
+                '''
+            }
+        }
+
+        stage('Docker Disk Cleanup') {
+            steps {
+                sh '''
+                    echo "Docker disk usage before cleanup"
+                    docker system df
+
+                    # 중지된 컨테이너 정리
+                    docker container prune -f
+
+                    # 사용하지 않는 빌드 캐시 정리
+                    docker builder prune -af
+
+                    echo "Docker disk usage after cleanup"
+                    docker system df
+                '''
             }
         }
     }
