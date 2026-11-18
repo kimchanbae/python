@@ -49,7 +49,7 @@ pipeline {
                             set -e
                             docker buildx imagetools inspect \
                               "${IMAGE_NAME}:${IMAGE_TAG}" \
-                              --format '{{json .Manifest}}' \
+                              --format '{{.Digest}}' \
                               | sha256sum | awk '{print $1}'
                         ''',
                         returnStdout: true
@@ -115,6 +115,8 @@ pipeline {
                       --restart unless-stopped \
                       -p 8501:8501 \
                       "${LOCAL_IMAGE}:${IMAGE_TAG}"
+
+                    docker image prune -af
                 '''
             }
         }
