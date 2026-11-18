@@ -49,12 +49,15 @@ pipeline {
                             set -e
                             docker buildx imagetools inspect \
                               "${IMAGE_NAME}:${IMAGE_TAG}" \
-                              --format '{{.Digest}}' \
-                              | sha256sum | awk '{print $1}'
+                              awk '/^Digest:/ {print $2; exit}'
                         ''',
                         returnStdout: true
                     ).trim()
 
+                    if (!env.REMOTE_DIGEST) {
+                        error('GHCR Remote Digest를 가져오지 못했습니다.')
+                    }
+                    
                     if (fileExists(env.DIGEST_FILE)) {
                         env.LOCAL_DIGEST = readFile(
                             env.DIGEST_FILE
@@ -62,6 +65,9 @@ pipeline {
                     } else {
                         env.LOCAL_DIGEST = ''
                     }
+
+                    echo "REMOTE_DIGEST: ${env.REMOTE_DIGEST}"
+                    echo "LOCAL_DIGEST: ${env.LOCAL_DIGEST}"
 
                     if (env.REMOTE_DIGEST == env.LOCAL_DIGEST) {
                         env.SHOULD_DEPLOY = 'false'
