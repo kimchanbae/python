@@ -99,10 +99,23 @@ pipeline {
             }
             steps {
                 sh '''
+                    set -e
+
+                    # GHCR 이미지에 로컬 태그 추가
                     docker tag \
                         "${IMAGE_NAME}:${IMAGE_TAG}" \
                         "${LOCAL_IMAGE}:${IMAGE_TAG}"
-                    docker images "${LOCAL_IMAGE}"
+
+                    # GHCR 이미지 태그 제거
+                    docker rmi "${IMAGE_NAME}:${IMAGE_TAG}"    
+
+                    # 이미지 태그 확인
+                    docker image inspect \
+                        "${LOCAL_IMAGE}:${IMAGE_TAG}"
+
+                    # 최종 이미지 확인
+                    docker images --format \
+                        'table {{.Repository}}\\t{{.Tag}}\\t{{.ID}}'
                 '''
             }
         }
@@ -203,7 +216,7 @@ pipeline {
 
                         echo "DELETE OLD IMAGE: $IMAGE_TAG"
 
-                        docker rmi "$IMAGE_TAG" || true
+                        docker rmi "${LOCAL_IMAGE}:${IMAGE_TAG}" || true
 
                     done
 
@@ -220,8 +233,13 @@ pipeline {
             }
             steps {
                 sh '''
+                    set -e
+
                     echo "Docker disk usage before cleanup"
-                    docker system df
+                    docker images
+                    
+                    # 미사용 dangling 이미지 삭제
+                    docker image prune -f
 
                     # 중지된 컨테이너 정리
                     docker container prune -f
@@ -230,6 +248,7 @@ pipeline {
                     docker builder prune -af
 
                     echo "Docker disk usage after cleanup"
+                    docker images
                     docker system df
                 '''
             }
