@@ -48,7 +48,7 @@ pipeline {
                         script: '''
                             set -e
                             docker buildx imagetools inspect \
-                              "${IMAGE_NAME}:${IMAGE_TAG}" \
+                              "${IMAGE_NAME}:${IMAGE_TAG}" |
                               awk '/^Digest:/ {print $2; exit}'
                         ''',
                         returnStdout: true
