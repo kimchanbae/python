@@ -52,8 +52,15 @@ ai_pages = [
         "title": "🎱 Lotto Monitor",
         "description": "AI 로또 번호 생성 서비스입니다.",
         "path": "lotto/lotto.py",
-        "label": "Lotto 모니터 실행",
+        "label": "Lotto 번호생성 서비스 실행",
         "icon": "🎱"
+    },
+    {
+        "title": "🔍 검색 Monitor",
+        "description": "AI 문서검색 서비스입니다.",
+        "path": "rag/rag.py",
+        "label": "문서검색 서비스 실행",
+        "icon": "search"
     }
 ]
 

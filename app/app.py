@@ -37,6 +37,12 @@ lotto_page = st.Page(
     icon="🎱"
 )
 
+search_page = st.Page(
+    BASE_DIR / "rag" / "rag.py",
+    title="검색 대시보드",
+    icon="🔍"
+)
+
 auto_page = st.Page(
     BASE_DIR / "auto" / "auto.py",
     title="자동화 대시보드"
