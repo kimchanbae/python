@@ -64,5 +64,14 @@ jobs:
           provenance: true
           sbom: true
 
+      #8. 이전 GHCR 이미지 버전 정리
+      - name: Delete old packages version
+        uses: actions/delete-package-version@v5
+        with:
+          package-name: python-api
+          package-type: container
+          min-version-to-skip: 3
+          delete-only-untagged-versions: false
+
 
       
