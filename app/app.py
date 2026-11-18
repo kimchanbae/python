@@ -39,8 +39,8 @@ lotto_page = st.Page(
 
 search_page = st.Page(
     BASE_DIR / "rag" / "rag.py",
-    title="검색 대시보드",
-    icon="🔍"
+    title="문서검색 대시보드",
+    icon="search"
 )
 
 auto_page = st.Page(
@@ -53,7 +53,7 @@ pg = st.navigation(
     {
         "메인": [dashboard_page], 
         "모니터링": [pcmonitor_page, stock_page], 
-        "AI": [lotto_page],
+        "AI": [lotto_page, search_page],
         "자동화": [auto_page]
     },
     position="sidebar"
