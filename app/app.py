@@ -31,6 +31,12 @@ stock_page = st.Page(
     icon="📈"
 )
 
+lotto_page = st.Page(
+    BASE_DIR / "lotto" / "lotto.py",
+    title="lotto 대시보드",
+    icon="🎱"
+)
+
 auto_page = st.Page(
     BASE_DIR / "auto" / "auto.py",
     title="자동화 대시보드"
@@ -41,6 +47,7 @@ pg = st.navigation(
     {
         "메인": [dashboard_page], 
         "모니터링": [pcmonitor_page, stock_page], 
+        "AI": [lotto_page],
         "자동화": [auto_page]
     },
     position="sidebar"

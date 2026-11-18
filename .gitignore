@@ -1,0 +1,31 @@
+#환경설정 파일
+.env
+.env.local
+
+#로그 파일
+.log
+
+#임시 파일
+*.tmp
+
+# Python 캐시 파일 및 폴더
+__pycache__/
+*.py[cod]
+
+# 빌드 폴더
+dist/
+build/
+
+#modules 폴더
+node_modules/
+
+#test 폴더
+test/
+
+# IDE 설정
+.vscode/
+
+#프로젝트 최상위 config.json
+/config.json
+
+# 특정 파일
