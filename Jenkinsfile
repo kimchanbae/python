@@ -12,7 +12,7 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = 'ghcr.io/kimchanbae/python-api' 
+        IMAGE_NAME = 'ghcr.io/OWNER/python-api' 
         LOCAL_IMAGE = 'python-api'
         CONTAINER_NAME = 'python-app'
         IMAGE_TAG = 'latest'
@@ -152,81 +152,81 @@ pipeline {
         }
 
         // 이전 컨테이너 이미지 버전 정리
-        stage('Cleanup Old Images') {
-            when {
-                expression { env.SHOULD_DEPLOY == 'true' }
-            }
-            steps {
-                sh '''
-                    set -e
+        // stage('Cleanup Old Images') {
+        //     when {
+        //         expression { env.SHOULD_DEPLOY == 'true' }
+        //     }
+        //     steps {
+        //         sh '''
+        //             set -e
 
-                    # 현재 실행 컨테이너의 실제 이미지 ID
-                    CURRENT_IMAGE=$(docker inspect \
-                    --format='{{.Image}}' "${CONTAINER_NAME}")
+        //             # 현재 실행 컨테이너의 실제 이미지 ID
+        //             CURRENT_IMAGE=$(docker inspect \
+        //             --format='{{.Image}}' "${CONTAINER_NAME}")
 
-                    echo "Current image: $CURRENT_IMAGE"
+        //             echo "Current image: $CURRENT_IMAGE"
 
-                    # python-api 이미지 목록 확인
-                    docker image ls "${LOCAL_IMAGE}" \
-                    --format '{{.Repository}}:{{.Tag}} {{.ID}}' |
-                    while read IMAGE_TAG IMAGE_ID; do
+        //             # python-api 이미지 목록 확인
+        //             docker image ls "${LOCAL_IMAGE}" \
+        //             --format '{{.Repository}}:{{.Tag}} {{.ID}}' |
+        //             while read IMAGE_TAG IMAGE_ID; do
 
-                        # 현재 실행 이미지 보호
-                        if [ "$IMAGE_ID" = "$CURRENT_IMAGE" ]; then
-                            echo "KEEP CURRENT: $IMAGE_TAG"
-                            continue
-                        fi
+        //                 # 현재 실행 이미지 보호
+        //                 if [ "$IMAGE_ID" = "$CURRENT_IMAGE" ]; then
+        //                     echo "KEEP CURRENT: $IMAGE_TAG"
+        //                     continue
+        //                 fi
 
-                        # 다른 컨테이너가 사용 중인지 확인
-                        USED=false
+        //                 # 다른 컨테이너가 사용 중인지 확인
+        //                 USED=false
 
-                        for CID in $(docker ps -aq); do
-                            USED_IMAGE=$(docker inspect \
-                            --format='{{.Image}}' "$CID")
+        //                 for CID in $(docker ps -aq); do
+        //                     USED_IMAGE=$(docker inspect \
+        //                     --format='{{.Image}}' "$CID")
 
-                            if [ "$USED_IMAGE" = "$IMAGE_ID" ]; then
-                                USED=true
-                                break
-                            fi
-                        done
+        //                     if [ "$USED_IMAGE" = "$IMAGE_ID" ]; then
+        //                         USED=true
+        //                         break
+        //                     fi
+        //                 done
 
-                        if [ "$USED" = "true" ]; then
-                            echo "KEEP IN USE: $IMAGE_TAG"
-                            continue
-                        fi
+        //                 if [ "$USED" = "true" ]; then
+        //                     echo "KEEP IN USE: $IMAGE_TAG"
+        //                     continue
+        //                 fi
 
-                        echo "DELETE OLD IMAGE: $IMAGE_TAG"
+        //                 echo "DELETE OLD IMAGE: $IMAGE_TAG"
 
-                        docker rmi "$IMAGE_TAG" || true
+        //                 docker rmi "$IMAGE_TAG" || true
 
-                    done
+        //             done
 
-                    echo "Old image cleanup completed."
-                    docker images "${LOCAL_IMAGE}"
-                '''
-            }
-        }
+        //             echo "Old image cleanup completed."
+        //             docker images "${LOCAL_IMAGE}"
+        //         '''
+        //     }
+        // }
 
-        stage('Docker Disk Cleanup') {
-            when {
-                expression { env.SHOULD_DEPLOY == 'true' }
-            }
-            steps {
-                sh '''
-                    echo "Docker disk usage before cleanup"
-                    docker system df
+        // stage('Docker Disk Cleanup') {
+        //     when {
+        //         expression { env.SHOULD_DEPLOY == 'true' }
+        //     }
+        //     steps {
+        //         sh '''
+        //             echo "Docker disk usage before cleanup"
+        //             docker system df
 
-                    # 중지된 컨테이너 정리
-                    docker container prune -f
+        //             # 중지된 컨테이너 정리
+        //             docker container prune -f
 
-                    # 사용하지 않는 빌드 캐시 정리
-                    docker builder prune -af
+        //             # 사용하지 않는 빌드 캐시 정리
+        //             docker builder prune -af
 
-                    echo "Docker disk usage after cleanup"
-                    docker system df
-                '''
-            }
-        }
+        //             echo "Docker disk usage after cleanup"
+        //             docker system df
+        //         '''
+        //     }
+        // }
     }
 
     post {
