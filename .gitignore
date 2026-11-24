@@ -1,6 +1,7 @@
 #환경설정 파일
 .env
 .env.local
+.env.docker
 
 #로그 파일
 .log
@@ -11,6 +12,7 @@
 # Python 캐시 파일 및 폴더
 __pycache__/
 *.py[cod]
+*.pyc
 
 # IDE 설정
 .vscode/

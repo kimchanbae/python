@@ -11,6 +11,17 @@ services:
 
     restart: unless-stopped
 
+    # Docker 배포 환경변수
+    env_file:
+      - .env.docker
+
+    environment:
+      APP_ENV: ${APP_ENV:-docker}
+      API_URL: ${API_URL:-http://fastapi:8000}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://ollama:11434}
+      CHROMA_HOST: ${CHROMA_HOST:-chromadb}
+      CHROMA_PORT: ${CHROMA_PORT:-8000}
+
     mem_limit: 512m
 
     healthcheck:

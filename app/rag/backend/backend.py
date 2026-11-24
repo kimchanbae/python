@@ -19,7 +19,6 @@ from fastapi import (
 from pydantic import BaseModel, Field
 
 from app.config import(
-    OLLAMA_BASE_URL,
     DATA_DIR
 )
 from app.indexer import index_documents
@@ -27,6 +26,12 @@ from app.rag import ask_question
 from app.vector_store import (
     get_document_count,
     get_vector_store
+)
+
+from config import(
+    OLLAMA_BASE_URL,
+    CHROMA_HOST,
+    CHROMA_PORT
 )
 
 print("BACKEND MODULE LOADED")
@@ -79,7 +84,9 @@ async def log_requests(request, call_next):
 def health():
     return {
         "status": "ok",
-        "service": "Knowledge RAG"
+        "service": "Knowledge RAG",
+        "ollama": OLLAMA_BASE_URL,
+        "chroma": f"{CHROMA_HOST}:{CHROMA_PORT}"
     }
 
 @app.post("/api/upload")

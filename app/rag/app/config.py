@@ -1,4 +1,13 @@
 from pathlib import Path
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+API_URL = os.getenv(
+    "API_URL",
+    "http://127.0.0.1:8000"
+)
 
 # 프로젝트 경로
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -7,7 +16,7 @@ DATA_DIR = BASE_DIR / "data"
 CHROMA_DIR = BASE_DIR / "chroma_db"
 
 # Ollama 설정
-OLLAMA_BASE_URL = "http://127.0.0.1:11434"
+# OLLAMA_BASE_URL = "http://127.0.0.1:11434"
 
 LLM_MODEL = "qwen2.5:1.5b"
 EMBED_MODEL = "nomic-embed-text"

@@ -3,7 +3,10 @@ import requests
 import time
 
 # FastAPI 주소
-API_URL = "http://127.0.0.1:8000"
+# API_URL = "http://127.0.0.1:8000"
+from app.config import(
+    API_URL
+)
 
 st.set_page_config(
     page_title="통합 지식검색 AI",

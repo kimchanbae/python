@@ -58,7 +58,7 @@ ai_pages = [
     {
         "title": "🔍 검색 Monitor",
         "description": "AI 문서검색 서비스입니다.",
-        "path": "rag/frontend/main.py",
+        "path": "rag/frontend/main.py", 
         "label": "문서검색 서비스 실행",
         "icon": ":material/search:"
     }
