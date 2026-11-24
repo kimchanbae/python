@@ -38,7 +38,7 @@ lotto_page = st.Page(
 )
 
 search_page = st.Page(
-    BASE_DIR / "rag" / "rag.py",
+    BASE_DIR / "rag" / "frontend" / "main.py",
     title="문서검색 대시보드",
     icon=":material/search:"
 )
