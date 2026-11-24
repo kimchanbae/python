@@ -6,6 +6,7 @@ streamlit-aggrid
 Flask>=3.1.0
 fastapi[standard]==0.162.5
 uvicorn[standard]==0.34.0
+python-multipart
 pytest==8.3.5
 
 # Financial Data
@@ -15,6 +16,9 @@ yfinance>=0.2.50
 pandas>=2.2.3
 numpy>=2.1.0
 requests>=2.32.0
+openpyxl
+xlrd
+beautifulsoup4
 
 # Machine Learning
 scikit-learn>=1.6.0
@@ -24,3 +28,35 @@ plotly>=5.18.0
 
 # System Monitoring
 psutil>=6.1.0
+
+# LangChain RAG
+langchain
+langchain-core
+langchain-community
+langchain-text-splitters
+langchain-ollama
+langchain-chroma
+
+# ==========================================
+# Vector Database
+# ==========================================
+chromadb
+
+# ==========================================
+# Document Loaders
+# ==========================================
+pypdf
+python-docx
+python-pptx
+unstructured
+
+# ==========================================
+# Ollama Client
+# ==========================================
+ollama
+
+# ==========================================
+# Optional Utilities
+# ==========================================
+tiktoken
+pydantic

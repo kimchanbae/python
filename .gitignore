@@ -12,6 +12,9 @@
 __pycache__/
 *.py[cod]
 
+# IDE 설정
+.vscode/
+
 # 빌드 폴더
 dist/
 build/
@@ -22,8 +25,9 @@ node_modules/
 #test 폴더
 test/
 
-# IDE 설정
-.vscode/
+#chroma_test 폴더
+venv_chroma_test/
+chroma_test_env
 
 #프로젝트 최상위 config.json
 /config.json
