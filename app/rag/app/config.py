@@ -4,11 +4,6 @@ import os
 
 load_dotenv()
 
-API_URL = os.getenv(
-    "API_URL",
-    "http://127.0.0.1:8000"
-)
-
 # 프로젝트 경로
 BASE_DIR = Path(__file__).resolve().parent.parent
 

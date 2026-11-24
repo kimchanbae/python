@@ -1,11 +1,12 @@
 import streamlit as st
 import requests
 import time
+import os
 
 # FastAPI 주소
-# API_URL = "http://127.0.0.1:8000"
-from app.config import(
-    API_URL
+API_URL = os.getenv(
+    "API_URL",
+    "http://127.0.0.1:8000"
 )
 
 st.set_page_config(
