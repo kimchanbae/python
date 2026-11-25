@@ -18,17 +18,17 @@ from fastapi import (
 
 from pydantic import BaseModel, Field
 
-from app.config import(
+from app.rag.config.config import(
     DATA_DIR
 )
-from app.indexer import index_documents
-from app.rag import ask_question
-from app.vector_store import (
+from app.rag.config.indexer import index_documents
+from app.rag.config.rag import ask_question
+from app.rag.config.vector_store import (
     get_document_count,
     get_vector_store
 )
 
-from config import(
+from app.rag.backend.backend_config import(
     OLLAMA_BASE_URL,
     CHROMA_HOST,
     CHROMA_PORT

@@ -3,7 +3,7 @@ from functools import lru_cache
 from langchain_chroma import Chroma
 from langchain_ollama import OllamaEmbeddings
 
-from app.config import (
+from app.rag.config.config import (
     OLLAMA_BASE_URL,
     EMBED_MODEL,
     CHROMA_DIR,

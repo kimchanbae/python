@@ -4,7 +4,7 @@ from langchain_ollama import ChatOllama
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
-from app.config import (
+from app.rag.config.config import (
     LLM_MODEL,
     OLLAMA_BASE_URL,
     TEMPERATURE,
@@ -13,7 +13,7 @@ from app.config import (
     NUM_PREDICT
 )
 
-from app.vector_store import get_vector_store
+from app.rag.config.vector_store import get_vector_store
 
 
 @lru_cache(maxsize=1)

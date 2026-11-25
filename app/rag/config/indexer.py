@@ -5,20 +5,20 @@ from langchain_text_splitters import (
     RecursiveCharacterTextSplitter
 )
 
-from app.config import (
+from app.rag.config.config import (
     DATA_DIR,
     CHUNK_SIZE,
     CHUNK_OVERLAP,
     BATCH_SIZE
 )
 
-from app.document_loader import (
+from app.rag.config.document_loader import (
     load_document,
     file_hash,
     SUPPORTED_EXTENSIONS
 )
 
-from app.vector_store import (
+from app.rag.config.vector_store import (
     get_vector_store,
     get_document_count
 )
