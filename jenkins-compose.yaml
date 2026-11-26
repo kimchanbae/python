@@ -1,6 +1,6 @@
 services:
   jenkins:
-    image: jenkins:v2
+    image: jenkins:v2 
     build:
       context: ./jenkins
       dockerfile: Dockerfile
