@@ -125,7 +125,7 @@ pipeline {
             when {
                 expression { env.SHOULD_DEPLOY == 'true' }
             }
-            steps {
+            steps { 
                 sh '''
                     docker rm -f "${CONTAINER_NAME}" || true
 
