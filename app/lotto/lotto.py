@@ -78,6 +78,17 @@ p, label, span {
     margin-bottom: 12px;
 }
 
+/* 로또 번호 컨테이너 */
+.lotto-container-ball {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    white-space: nowrap;
+    gap: 4px;
+    overflow-x: auto;
+    margin: 0 0 10px 0;
+}
+
 /* 로또 번호 */
 .lotto-ball {
     display: inline-flex;
@@ -171,18 +182,9 @@ def show_balls(numbers):
         else:
             color = "#43A047"
 
-        html += f"""
-        <span class="lotto-ball"
-        style="background:{color}">
-        {n}
-        </span>
-        """
+        html += f'<span class="lotto-ball" style="background:{color}">{n}</span>'
 
-    st.markdown(
-        html,
-        unsafe_allow_html=True
-    )
-
+    return html   
 
 # ----------------------------------
 # 제목
@@ -240,9 +242,14 @@ c4.metric(
 
 with st.expander("최신 당첨번호 확인"):
 
-    show_balls(
-        [int(last_row[c]) for c in NUMBER_COLS]
-    )
+    ball_html = show_balls([int(last_row[c]) for c in NUMBER_COLS])
+
+    ball_container = f"""
+        <div class="lotto-container-ball">
+        {ball_html}
+        </div>
+    """
+    st.markdown(ball_container, unsafe_allow_html=True)
 
 st.divider()
 
@@ -407,7 +414,14 @@ with tab1:
                 unsafe_allow_html=True
             )
 
-            show_balls(game)
+            game_html = show_balls(game)
+
+            game_container = f"""
+                <div class="lotto-container-ball">
+                {game_html}
+                </div>
+            """
+            st.markdown(game_container, unsafe_allow_html=True)
 
             st.caption(
                 f"합계: {sum(game)} | "
